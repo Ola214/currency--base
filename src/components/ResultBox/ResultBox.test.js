@@ -15,19 +15,37 @@ import ResultBox from './ResultBox';
   });
 
   describe('ResultBox', () => {
-  const testCases = [
-    { amount: 100, from: 'PLN', to: 'USD', expectedText: 'PLN 100.00 = $28.57' },
-    { amount: 200, from: 'PLN', to: 'USD', expectedText: 'PLN 200.00 = $57.14' },
-    { amount: 345, from: 'PLN', to: 'USD', expectedText: 'PLN 345.00 = $98.57' },
-    { amount: 50, from: 'PLN', to: 'USD', expectedText: 'PLN 50.00 = $14.29' },
-  ];
+    const testCases = [
+        { amount: 100, from: 'PLN', to: 'USD', expectedText: 'PLN 100.00 = $28.57' },
+        { amount: 200, from: 'PLN', to: 'USD', expectedText: 'PLN 200.00 = $57.14' },
+        { amount: 345, from: 'PLN', to: 'USD', expectedText: 'PLN 345.00 = $98.57' },
+        { amount: 50, from: 'PLN', to: 'USD', expectedText: 'PLN 50.00 = $14.29' },
+    ];
 
-  for (const testObj of testCases) {
-    it(`should render proper info about conversion when ${testObj.from} -> ${testObj.to} and amount=${testObj.amount}`, () => {
-      render(<ResultBox from={testObj.from} to={testObj.to} amount={testObj.amount} />);
-      const output = screen.getByTestId('output');
-      expect(output).toHaveTextContent(testObj.expectedText);
-      cleanup();
-    });
-  }
-});
+    for (const testObj of testCases) {
+        it(`should render proper info about conversion when ${testObj.from} -> ${testObj.to} and amount=${testObj.amount}`, () => {
+        render(<ResultBox from={testObj.from} to={testObj.to} amount={testObj.amount} />);
+        const output = screen.getByTestId('output');
+        expect(output).toHaveTextContent(testObj.expectedText);
+        cleanup();
+        });
+    }
+  });
+
+  describe('ResultBox2', () => {
+    const testCases = [
+        { amount: 100, from: 'USD', to: 'PLN', expectedText: '$100.00 = PLN 350.00' },
+        { amount: 200, from: 'USD', to: 'PLN', expectedText: '$200.00 = PLN 700.00' },
+        { amount: 345, from: 'USD', to: 'PLN', expectedText: '$345.00 = PLN 1,207.50' },
+        { amount: 50, from: 'USD', to: 'PLN', expectedText: '$50.00 = PLN 175.00' },
+    ];
+
+    for (const testObj of testCases) {
+        it(`should render proper info about conversion when USD -> PLN and amount=${testObj.amount}`, () => {
+        render(<ResultBox from={testObj.from} to={testObj.to} amount={testObj.amount} />);
+        const output = screen.getByTestId('output');
+        expect(output).toHaveTextContent(testObj.expectedText);
+        cleanup();
+        });
+    }
+  });
