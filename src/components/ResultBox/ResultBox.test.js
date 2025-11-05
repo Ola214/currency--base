@@ -65,3 +65,11 @@ import ResultBox from './ResultBox';
         });
     }
   });
+
+  describe('ResultBox negative values', () => {
+    it('should render "Wrong value..." when amount is negative', () => {
+        render(<ResultBox from="PLN" to="USD" amount={-100} />);
+        const output = screen.getByTestId('output');
+        expect(output).toHaveTextContent('Wrong value...');
+    });
+    });
