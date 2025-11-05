@@ -1,68 +1,39 @@
-import React, { useState } from 'react';
-import './CurrencyForm.scss';
+import { render, screen, fireEvent, cleanup } from '@testing-library/react';
+import CurrencyForm from './CurrencyForm';  // ← ścieżka do Twojego komponentu
 
-const CurrencyForm = ({ action }) => {
-  const [amount, setAmount] = useState('');
-  const [from, setFrom] = useState('PLN');
-  const [to, setTo] = useState('USD');
+describe('CurrencyForm', () => {
+  const testCases = [
+    { amount: '100', from: 'PLN', to: 'USD' },
+    { amount: '20', from: 'USD', to: 'PLN' },
+    { amount: '200', from: 'PLN', to: 'USD' },
+    { amount: '345', from: 'USD', to: 'PLN' },
+  ];
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    action({
-      amount: parseFloat(amount),
-      from,
-      to,
+  for (const testObj of testCases) {
+    it(`should run action callback with proper data: amount=${testObj.amount}, from=${testObj.from}, to=${testObj.to}`, () => {
+      const action = jest.fn();
+
+      render(<CurrencyForm action={action} />);
+
+      const amountField = screen.getByTestId('amount');
+      const fromSelect = screen.getByTestId('from-select');
+      const toSelect = screen.getByTestId('to-select');
+      const submitButton = screen.getByText('Convert');
+
+      fireEvent.change(amountField, { target: { value: testObj.amount } });
+      fireEvent.change(fromSelect, { target: { value: testObj.from } });
+      fireEvent.change(toSelect, { target: { value: testObj.to } });
+      fireEvent.click(submitButton);
+
+      expect(action).toHaveBeenCalledTimes(1);
+      expect(action).toHaveBeenCalledWith({
+        amount: Number(testObj.amount),
+        from: testObj.from,
+        to: testObj.to,
+      });
+
+      // 🧹 odmontowanie komponentu po każdym teście w pętli
+      cleanup();
     });
-  };
-
-  return (
-    <form className="form" onSubmit={handleSubmit}>
-      <label>
-        <span>Amount:</span>
-        <input
-          className="input"
-          type="text"
-          value={amount}
-          onChange={e => setAmount(e.target.value)}
-          data-testid="amount"
-        />
-      </label>
-
-      <label>
-        <span>From</span>
-        <select
-          className="select"
-          value={from}
-          onChange={e => setFrom(e.target.value)}
-          data-testid="from"
-        >
-          <option value="PLN">PLN</option>
-          <option value="USD">USD</option>
-        </select>
-      </label>
-
-      <label>
-        <span>To</span>
-        <select
-          className="select"
-          value={to}
-          onChange={e => setTo(e.target.value)}
-          data-testid="to"
-        >
-          <option value="PLN">PLN</option>
-          <option value="USD">USD</option>
-        </select>
-      </label>
-
-      <button
-        className="button"
-        type="submit"
-        data-testid="submit"
-      >
-        Convert
-      </button>
-    </form>
-  );
-};
-
-export default CurrencyForm;
+  }
+});
