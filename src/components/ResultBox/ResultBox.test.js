@@ -49,3 +49,19 @@ import ResultBox from './ResultBox';
         });
     }
   });
+
+  describe('ResultBox same currency', () => {
+    const testCases = [
+        { amount: 100, from: 'PLN', to: 'PLN', expectedText: 'PLN 100.00 = PLN 100.00' },
+        { amount: 250, from: 'USD', to: 'USD', expectedText: '$250.00 = $250.00' },
+    ];
+
+    for (const testObj of testCases) {
+        it(`should render proper info when ${testObj.from} -> ${testObj.to} and amount=${testObj.amount}`, () => {
+        render(<ResultBox from={testObj.from} to={testObj.to} amount={testObj.amount} />);
+        const output = screen.getByTestId('output');
+        expect(output).toHaveTextContent(testObj.expectedText);
+        cleanup();
+        });
+    }
+  });
