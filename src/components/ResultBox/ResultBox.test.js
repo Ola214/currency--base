@@ -1,7 +1,14 @@
-import { render, screen, fireEvent, cleanup } from '@testing-library/react';
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom/extend-expect';
 import ResultBox from './ResultBox';
 
   describe('Component ResultBox', () => {
+    it('should render proper info about conversion when PLN -> USD', () => {
+        render(<ResultBox from="PLN" to="USD" amount={100} />);
+        const output = screen.getByTestId('output');
+        expect(output).toHaveTextContent('PLN 100.00 = $28.57');
+    });
     it('should render without crashing', () => {
         render(<ResultBox from="PLN" to="USD" amount={100} />);
     });
